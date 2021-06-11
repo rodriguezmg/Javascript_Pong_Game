@@ -7,12 +7,14 @@ const boardY = 300
 const paddleH = 10
 const paddleD = boardY - paddleH
 const paddleW = 150
+const btnRestart = document.querySelector('button')
 
 let paddleX = 150
 let ballX = 150
 let ballY = 150
-let ballDX = 2
-let ballDY = 4
+let ballDX = Math.round(Math.random() * (4 + 4)) - 4
+let ballDY = Math.round(Math.random() * (4 + 4)) - 4
+
 
 function drawGameCanvas() {
     canvas = document.getElementById('gameBoard')
@@ -79,6 +81,10 @@ function keyInput(e) {
             }
             break;
     }
+}
+
+btnRestart.onclick = function restartGame() {
+    window.location.reload()
 }
 
 drawGameCanvas()
