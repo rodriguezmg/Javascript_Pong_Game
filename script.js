@@ -7,14 +7,29 @@ const boardY = 300
 const paddleH = 10
 const paddleD = boardY - paddleH
 const paddleW = 150
-const btnRestart = document.querySelector('button')
 
 let paddleX = 150
 let ballX = 150
 let ballY = 150
-let ballDX = Math.round(Math.random() * (4 + 4)) - 4
-let ballDY = Math.round(Math.random() * (4 + 4)) - 4
 
+let randomGame = [-4, -3, -2, 2, 3, 4]
+function randomG(array) {
+    return array[Math.floor(Math.random()*array.length)]
+}
+let ballDX = randomG(randomGame)
+let ballDY = randomG(randomGame)
+
+const gameWrapper = document.getElementById('game')
+const score = document.createElement('div')
+score.className = 'score'
+score.textContent = '0'
+gameWrapper.appendChild(score)
+
+let countScore = 0
+
+function updateDisplay() {
+    score.textContent = countScore
+}
 
 function drawGameCanvas() {
     canvas = document.getElementById('gameBoard')
@@ -59,10 +74,33 @@ function draw() {
     } else if ((ballY + ballDY) > boardY - 15) {
         if (ballX > paddleX && ballX < paddleX + paddleW) {
             ballDY = -ballDY
+            countScore++
+            updateDisplay()
         } else {
             clearInterval(gameLoop)
-            alert('Game Over')
+            gameOver()
         }
+    }
+}
+
+function gameOver() {
+    const alertDiv = document.createElement('div')
+    const reset = document.createElement('button')
+    reset.textContent = 'Reset'
+    alertDiv.className = 'gameOver'
+    gameWrapper.appendChild(alertDiv)
+    gameWrapper.appendChild(reset)
+    alertDiv.textContent = 'Game Over'
+    reset.onclick = function() {
+        gameWrapper.removeChild(reset)
+        gameWrapper.removeChild(alertDiv)
+        countScore = 0
+        updateDisplay()
+        ballX = 150
+        ballY = 150
+        gameLoop = setInterval(draw, 16)
+        ballDX = randomG(randomGame)
+        ballDY = randomG(randomGame)
     }
 }
 
@@ -81,10 +119,6 @@ function keyInput(e) {
             }
             break;
     }
-}
-
-btnRestart.onclick = function restartGame() {
-    window.location.reload()
 }
 
 drawGameCanvas()
